@@ -1,0 +1,39 @@
+---
+import { render } from 'astro:content';
+import { getImage } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import { allProjects, projectPath, type Project } from '../../lib/projects';
+import { url, CATEGORY_LABEL } from '../../lib/url';
+
+export async function getStaticPaths() {
+  const projects = await allProjects();
+  return projects.map((p, i) => ({
+    params: { slug: p.data.permalink ?? p.id },
+    props: { project: p, newer: projects[i - 1], older: projects[i + 1] },
+  }));
+}
+interface Props { project: Project; newer?: Project; older?: Project }
+const { project, newer, older } = Astro.props;
+const { Content } = await render(project);
+const { title, date, categories, excerpt, cover } = project.data;
+const og = cover ? (await getImage({ src: cover, width: 1200, format: 'jpg' })).src : undefined;
+const fmt = date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', timeZone: 'UTC' });
+---
+<Base title={title} description={excerpt} image={og} current="projects">
+  <article class="project" data-pagefind-body>
+    <header class="project-head">
+      <p class="project-meta">
+        {categories.map((c) => <a href={url(`/projects/category/${c}`)}>{CATEGORY_LABEL[c] ?? c}</a>)}
+        <time datetime={date.toISOString()} data-pagefind-meta="date">{fmt}</time>
+      </p>
+      <h1>{title}</h1>
+    </header>
+    <div class="prose">
+      <Content />
+    </div>
+  </article>
+  <nav class="pager" aria-label="More projects">
+    {newer ? <a href={url(projectPath(newer))} rel="prev"><span>← Newer</span>{newer.data.title}</a> : <span />}
+    {older ? <a href={url(projectPath(older))} rel="next" class="next"><span>Older →</span>{older.data.title}</a> : <span />}
+  </nav>
+</Base>

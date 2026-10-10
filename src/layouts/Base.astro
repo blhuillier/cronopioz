@@ -1,0 +1,59 @@
+---
+import '../styles/global.css';
+import { url } from '../lib/url';
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  current?: 'featured' | 'projects' | 'archive' | 'about' | 'search';
+}
+const SITE = "Sung's Grotto";
+const { title, description = 'Art, research and design by Sung-A Jang — immersive media, interactive sculpture, bio-art and data visualization.', image, current } = Astro.props;
+const fullTitle = title ? `${title} — ${SITE}` : SITE;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const nav = [
+  { key: 'featured', href: '/', label: 'Featured' },
+  { key: 'projects', href: '/projects', label: 'Projects' },
+  { key: 'archive', href: '/archive', label: 'Archive' },
+  { key: 'about', href: '/about', label: 'About' },
+] as const;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href={url('/favicon.svg')} type="image/svg+xml" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    {image && <meta property="og:image" content={new URL(image, Astro.site)} />}
+    <meta name="twitter:card" content={image ? 'summary_large_image' : 'summary'} />
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <header class="site-header">
+      <a class="brand" href={url('/')}>Sung’s Grotto</a>
+      <nav aria-label="Main">
+        {nav.map((n) => (
+          <a href={url(n.href)} aria-current={current === n.key ? 'page' : undefined}>{n.label}</a>
+        ))}
+        <a href={url('/search')} aria-current={current === 'search' ? 'page' : undefined} aria-label="Search">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        </a>
+      </nav>
+    </header>
+    <main id="main">
+      <slot />
+    </main>
+    <footer class="site-footer">
+      <span>© {new Date().getFullYear()} Sung-A Jang</span>
+      <a href="mailto:sung@cronopioz.com">sung@cronopioz.com</a>
+    </footer>
+  </body>
+</html>

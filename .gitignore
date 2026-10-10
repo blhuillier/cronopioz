@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.astro/
+.DS_Store
+# raw Squarespace dump (~350 MB) — kept locally, not in git
+_squarespace/
+scrape/scrape.log
+_to_delete/

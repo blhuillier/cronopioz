@@ -1,0 +1,23 @@
+---
+import { Image } from 'astro:assets';
+import { url, CATEGORY_LABEL } from '../lib/url';
+import { projectPath, type Project } from '../lib/projects';
+
+interface Props { project: Project; eager?: boolean }
+const { project, eager = false } = Astro.props;
+const { title, cover, categories, date } = project.data;
+---
+<article class="card">
+  <a href={url(projectPath(project))}>
+    <div class="card-media">
+      {cover
+        ? <Image src={cover} alt="" widths={[400, 700, 1000]} sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" loading={eager ? 'eager' : 'lazy'} />
+        : <div class="card-placeholder" aria-hidden="true">{title.slice(0, 1)}</div>}
+    </div>
+    <div class="card-meta">
+      <span class="cats">{categories.map((c) => CATEGORY_LABEL[c] ?? c).join(' · ')}</span>
+      <span class="year">{date.getUTCFullYear()}</span>
+    </div>
+    <h3>{title}</h3>
+  </a>
+</article>

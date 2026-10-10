@@ -1,0 +1,17 @@
+---
+import Base from '../layouts/Base.astro';
+import ProjectGrid from '../components/ProjectGrid.astro';
+import { featuredProjects } from '../lib/projects';
+import { url } from '../lib/url';
+const projects = await featuredProjects();
+---
+<Base current="featured">
+  <section class="intro">
+    <p class="lede">
+      Sung is an artist-researcher materializing fractures of control at the seams of body, technology, and nature.
+    </p>
+    <p class="sub"><a href={url('/about')}>About</a> · <a href={url('/projects')}>All projects</a></p>
+  </section>
+  <h2 class="section-title">Featured</h2>
+  <ProjectGrid projects={projects} />
+</Base>

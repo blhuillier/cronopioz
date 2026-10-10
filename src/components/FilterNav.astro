@@ -1,0 +1,13 @@
+---
+import { url, CATEGORIES, CATEGORY_LABEL } from '../lib/url';
+interface Props { active?: string; counts: Record<string, number>; total: number }
+const { active, counts, total } = Astro.props;
+---
+<nav class="filters" aria-label="Filter by category">
+  <a href={url('/projects')} aria-current={!active ? 'page' : undefined}>All <span>{total}</span></a>
+  {CATEGORIES.map((c) => (
+    <a href={url(`/projects/category/${c}`)} aria-current={active === c ? 'page' : undefined}>
+      {CATEGORY_LABEL[c]} <span>{counts[c] ?? 0}</span>
+    </a>
+  ))}
+</nav>

@@ -1,0 +1,21 @@
+---
+import Base from '../../../layouts/Base.astro';
+import ProjectGrid from '../../../components/ProjectGrid.astro';
+import FilterNav from '../../../components/FilterNav.astro';
+import { allProjects } from '../../../lib/projects';
+import { CATEGORIES, CATEGORY_LABEL } from '../../../lib/url';
+
+export function getStaticPaths() {
+  // Same URLs as the old Squarespace site: /projects/category/Art etc.
+  return CATEGORIES.map((cat) => ({ params: { cat } }));
+}
+const { cat } = Astro.params;
+const all = await allProjects();
+const counts = Object.fromEntries(CATEGORIES.map((c) => [c, all.filter((p) => p.data.categories.includes(c)).length]));
+const projects = all.filter((p) => p.data.categories.includes(cat as any));
+---
+<Base title={CATEGORY_LABEL[cat!]} current="projects">
+  <h1 class="page-title">Projects</h1>
+  <FilterNav active={cat} counts={counts} total={all.length} />
+  <ProjectGrid projects={projects} />
+</Base>

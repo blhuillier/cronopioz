@@ -1,0 +1,14 @@
+---
+import Base from '../../layouts/Base.astro';
+import ProjectGrid from '../../components/ProjectGrid.astro';
+import FilterNav from '../../components/FilterNav.astro';
+import { allProjects } from '../../lib/projects';
+import { CATEGORIES } from '../../lib/url';
+const projects = await allProjects();
+const counts = Object.fromEntries(CATEGORIES.map((c) => [c, projects.filter((p) => p.data.categories.includes(c)).length]));
+---
+<Base title="Projects" current="projects">
+  <h1 class="page-title">Projects</h1>
+  <FilterNav counts={counts} total={projects.length} />
+  <ProjectGrid projects={projects} />
+</Base>

@@ -1,0 +1,57 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      # Base path: "/" for <user>.github.io repos, "/<repo>" for project repos.
+      # Override with repository variables SITE_URL / BASE_PATH (e.g. once cronopioz.com points here).
+      - name: Resolve site URL and base path
+        run: |
+          OWNER="${GITHUB_REPOSITORY_OWNER,,}"
+          REPO="${GITHUB_REPOSITORY#*/}"
+          if [[ "${REPO,,}" == "${OWNER}.github.io" ]]; then DEF_BASE="/"; else DEF_BASE="/${REPO}"; fi
+          echo "SITE_URL=${{ vars.SITE_URL }}" >> "$GITHUB_ENV"
+          echo "BASE_PATH=${{ vars.BASE_PATH }}" >> "$GITHUB_ENV"
+          if [[ -z "${{ vars.SITE_URL }}" ]]; then echo "SITE_URL=https://${OWNER}.github.io" >> "$GITHUB_ENV"; fi
+          if [[ -z "${{ vars.BASE_PATH }}" ]]; then echo "BASE_PATH=${DEF_BASE}" >> "$GITHUB_ENV"; fi
+
+      - run: npm ci
+      - run: npm run build
+        env:
+          ASTRO_TELEMETRY_DISABLED: 1
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
