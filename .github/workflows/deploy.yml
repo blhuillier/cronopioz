@@ -36,6 +36,14 @@ jobs:
           echo "BASE_PATH=${{ vars.BASE_PATH }}" >> "$GITHUB_ENV"
           if [[ -z "${{ vars.SITE_URL }}" ]]; then echo "SITE_URL=https://${OWNER}.github.io" >> "$GITHUB_ENV"; fi
           if [[ -z "${{ vars.BASE_PATH }}" ]]; then echo "BASE_PATH=${DEF_BASE}" >> "$GITHUB_ENV"; fi
+          # Search engines: pages are indexable only once the custom domain is live (repository variable
+          # SITE_URL set, e.g. https://cronopioz.com). Until then every page gets <meta name="robots" content="noindex">.
+          # Force either way with repository variable NOINDEX=true|false.
+          if [[ -n "${{ vars.NOINDEX }}" ]]; then NOINDEX="${{ vars.NOINDEX }}";
+          elif [[ -n "${{ vars.SITE_URL }}" ]]; then NOINDEX=false;
+          else NOINDEX=true; fi
+          echo "PUBLIC_NOINDEX=${NOINDEX}" >> "$GITHUB_ENV"
+          echo "Site: ${SITE_URL:-https://${OWNER}.github.io} base=${DEF_BASE} noindex=${NOINDEX}"
 
       - run: npm ci
       - run: npm run build

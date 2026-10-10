@@ -11,6 +11,8 @@ interface Props {
 const SITE = "Sung's Grotto";
 const { title, description = 'Art, research and design by Sung-A Jang — immersive media, interactive sculpture, bio-art and data visualization.', image, current } = Astro.props;
 const fullTitle = title ? `${title} — ${SITE}` : SITE;
+// Test deploys (e.g. blhuillier/cronopioz) are hidden from search engines; see deploy.yml.
+const noindex = import.meta.env.PUBLIC_NOINDEX === 'true';
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const nav = [
   { key: 'featured', href: '/', label: 'Featured' },
@@ -26,7 +28,9 @@ const nav = [
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
     <link rel="canonical" href={canonical} />
+    <link rel="sitemap" href={url('/sitemap.xml')} />
     <link rel="icon" href={url('/favicon.svg')} type="image/svg+xml" />
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />

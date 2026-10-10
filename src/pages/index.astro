@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import ProjectGrid from '../components/ProjectGrid.astro';
+import Shows from '../components/Shows.astro';
 import { featuredProjects } from '../lib/projects';
 import { url } from '../lib/url';
 const projects = await featuredProjects();
@@ -12,6 +13,11 @@ const projects = await featuredProjects();
     </p>
     <p class="sub"><a href={url('/about')}>About</a> · <a href={url('/projects')}>All projects</a></p>
   </section>
+  <div class="section-head">
+    <h2 class="section-title">Recent exhibitions</h2>
+    <a href={url('/about#exhibitions')}>Full CV →</a>
+  </div>
+  <Shows limit={5} />
   <h2 class="section-title">Featured</h2>
   <ProjectGrid projects={projects} />
 </Base>

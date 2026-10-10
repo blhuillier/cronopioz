@@ -16,6 +16,11 @@ src/styles/global.css                  all styling
 scrape/                                one-off Squarespace migration scripts (kept for reference)
 ```
 
+## Updating exhibitions
+
+- **Home page “Recent exhibitions”**: edit `src/data/exhibitions.ts` (newest first; the home page shows the first 5).
+- **Full CV**: edit `src/content/pages/about.md` (section with `id="exhibitions"`).
+
 ## Adding a project
 
 Create `src/content/projects/my-project/index.md`:
@@ -70,11 +75,19 @@ The workflow works out the base path by itself:
 
 One-time setup in each repo: **Settings → Pages → Source: GitHub Actions**.
 
+### Search engines (hidden while testing)
+
+Test deploys are **not indexed**: every page gets `<meta name="robots" content="noindex, nofollow">` and the sitemap is empty.
+Indexing switches on automatically only when the repository variable `SITE_URL` is set (i.e. once cronopioz.com
+points here — step 1 of “Custom domain” below). Force it either way with the repository variable `NOINDEX=true` / `NOINDEX=false`.
+Note: `blhuillier.github.io` redirects to `www.benjissi.com`, so the test copy is served at `www.benjissi.com/cronopioz/`.
+
 ### Hand-over
 
 1. `blhuillier/cronopioz` → Settings → Danger zone → **Transfer ownership** → `splazt`.
 2. Sung accepts, renames the repo to `splazt.github.io`, and re-adds Benjamin as collaborator.
 3. Settings → Pages → Source: GitHub Actions (re-check after transfer). Push or re-run the workflow.
+   It stays hidden from search engines on `splazt.github.io` too, until `SITE_URL` is set.
 
 ### Custom domain (when leaving Squarespace)
 

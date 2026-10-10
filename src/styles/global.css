@@ -124,6 +124,8 @@ a:hover { color: var(--accent); }
 .prose hr { border: 0; border-top: 1px solid var(--line); margin: 40px auto; max-width: var(--prose); }
 .prose figure { margin: 0 0 24px; }
 .prose figure img { width: 100%; }
+/* standalone figures: never upscale small images past their native width */
+.prose > figure img, .prose .sq-col > figure img { width: auto; max-width: 100%; margin: 0 auto; }
 .prose figcaption { font-size: 0.85rem; color: var(--muted); margin-top: 8px; text-align: center; }
 .prose .ta-center { text-align: center; }
 .prose .ta-right { text-align: right; }
@@ -165,3 +167,21 @@ a:hover { color: var(--accent); }
 
 /* pagefind */
 #search { --pagefind-ui-primary: var(--fg); --pagefind-ui-text: var(--fg); --pagefind-ui-background: var(--bg); --pagefind-ui-border: var(--line); --pagefind-ui-tag: var(--card); --pagefind-ui-font: var(--sans); max-width: var(--prose); }
+
+/* per-work sections inside a project (e.g. Martian Gardener) */
+.prose .work-head { margin-top: 8px; }
+.prose .work-head h2 { margin-top: 0.4em; }
+.prose .work-meta { color: var(--muted); font-size: 0.9rem; }
+.prose .exhibited { color: var(--muted); font-size: 0.95rem; font-style: italic; }
+
+/* recent exhibitions (home + about) */
+.shows { list-style: none; margin: 0 0 64px; padding: 0; border-top: 1px solid var(--line); }
+.shows li { display: grid; grid-template-columns: 150px 1fr; gap: 4px 24px; padding: 14px 0; border-bottom: 1px solid var(--line); }
+.shows .when { color: var(--muted); font-size: 0.85rem; letter-spacing: 0.04em; padding-top: 3px; }
+.shows .what { font-family: var(--serif); font-size: 1.15rem; line-height: 1.35; }
+.shows .what a { text-decoration: none; }
+.shows .where { display: block; font-family: var(--sans); font-size: 0.88rem; color: var(--muted); margin-top: 2px; }
+.shows .tag { font: 0.7rem var(--sans); letter-spacing: .08em; text-transform: uppercase; border: 1px solid var(--line); border-radius: 999px; padding: 1px 8px; margin-left: 8px; vertical-align: 3px; color: var(--muted); }
+.section-head { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; }
+.section-head a { font-size: 0.85rem; color: var(--muted); text-decoration: none; }
+@media (max-width: 600px) { .shows li { grid-template-columns: 1fr; } }

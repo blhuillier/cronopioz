@@ -1,0 +1,24 @@
+---
+import { exhibitions } from '../data/exhibitions';
+import { url } from '../lib/url';
+interface Props { limit?: number }
+const { limit } = Astro.props;
+const list = limit ? exhibitions.slice(0, limit) : exhibitions;
+const label = { curated: 'curator / artist', solo: 'solo', 'art fair': 'art fair', group: '' } as const;
+---
+<ul class="shows">
+  {list.map((s) => {
+    const href = s.project ? url(`/projects/${s.project}`) : s.url;
+    const ext = !s.project && s.url;
+    return (
+      <li>
+        <span class="when">{s.when}</span>
+        <span class="what">
+          {href ? <a href={href} target={ext ? '_blank' : undefined} rel={ext ? 'noopener' : undefined}>{s.title}</a> : s.title}
+          {s.kind && label[s.kind] && <span class="tag">{label[s.kind]}</span>}
+          <span class="where">{s.where}</span>
+        </span>
+      </li>
+    );
+  })}
+</ul>
